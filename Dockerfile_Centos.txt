@@ -1,0 +1,21 @@
+FROM centos
+LABEL   Version = "1.0"
+LABEL   Descripcion = "Imagen Centos con nginx, php y git"
+LABEL   Autor = "Eduardo Lobo"
+
+RUN \
+		yum install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm && \
+		yum update -y && \
+		yum module disable -y php && \
+		yum module enable -y php:remi-7.4 && \
+		yum install -y nginx php git 
+RUN		echo "<?php phpinfo(); ?>" > /usr/share/nginx/html/info.php
+ENTRYPOINT ["/sbin/init"]
+CMD ["nginx", "-g", "daemon off;", "systemctl start nginx", "systemctl enable nginx", "systemctl start php-fpm", "systemctl enable php-fpm"]
+
+
+#docker run --name nginx_CENTOS -d -p 8081:8081 --privileged=true centos:nginx_php_git "/sbin/init"
+
+#docker run --name centos-mongo -dti --privileged=true centos "/sbin/init"
+
+
